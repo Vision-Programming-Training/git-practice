@@ -2,13 +2,17 @@
 
 Gitの基本操作を、コードではなく簡単なテキストファイル（`memo.txt` など）を使って練習するためのリポジトリです。
 
-上から順に進めれば、`clone` → `add` / `commit` → `diff` / `log` → `.gitignore` → `branch` / `merge` → コンフリクト解消 → `stash` → 取り消し系 → `fetch` / `pull` / `push` まで、日常的によく使うGit操作を一通り体験できます。
+上から順に進めれば、`clone` → 自分専用ブランチの作成 → `add` / `commit` → `diff` / `log` → `.gitignore` → `branch` / `merge` → コンフリクト解消 → `stash` → 取り消し系 → `fetch` / `pull` / `push` まで、日常的によく使うGit操作を一通り体験できます。
+
+> このリポジトリの `origin`（クローン元）はみんなで共有するものです。共有の `main` ブランチを直接汚さないよう、研修を始めたらまず自分専用のブランチを作り、以降の作業はすべてそのブランチ上で行ってください（手順は **2. 自分専用ブランチを作る** を参照）。
 
 各手順に「実行するコマンド」と「確認すること」を書いています。エラーが出ても慌てず、`git status` で今どういう状態かを確認しながら進めてください。
 
 ---
 
-## 0. （読み物）このリポジトリの成り立ち
+## 0. （実施済み）git初期化
+
+**目的: `git init` は最初の1回だけ行うものだと知る**
 
 このリポジトリは、作成者が最初に1回だけ `git init` して作られています。
 
@@ -26,6 +30,8 @@ git commit -m "Initial commit"
 ---
 
 ## 1. クローン
+
+**目的: リモートのリポジトリを手元に複製する**
 
 このリポジトリを手元に複製（クローン）します。
 
@@ -46,7 +52,31 @@ git remote -v
 
 ---
 
-## 2. 最初のコミット
+## 2. 自分専用ブランチを作る
+
+**目的: 共有リモートを汚さない、自分だけの作業スペースを用意する**
+
+`origin` はほかの研修者も同じものを見に行く共有リポジトリです。共有の `main` ブランチに直接コミットすると、他の人の作業とぶつかってしまいます。そこで、これ以降の作業はすべて自分専用のブランチ上で行います。
+
+```bash
+git switch -c mywork
+```
+
+> `mywork` は例です。実際には自分の名前やIDを使った、他の人とかぶらないブランチ名（例: `taro-practice`）にしてください。以降の手順では `mywork` と書いている部分を、自分が付けたブランチ名に読み替えてください。
+
+**確認すること**
+
+```bash
+git branch
+```
+
+`*` が付いた現在のブランチが `mywork`（自分が付けた名前）になっていることを確認します。以降の **3〜11** の練習は、すべてこのブランチの上で行います。
+
+---
+
+## 3. 最初のコミット
+
+**目的: `add` → `commit` の基本サイクルを体験する**
 
 `memo.txt` を好きなテキストエディタで開き、1行追記して保存してください。
 
@@ -70,7 +100,9 @@ git commit -m "memo.txtに追記"
 
 ---
 
-## 3. 変更の確認（diff / log）
+## 4. 変更の確認（diff / log）
+
+**目的: 変更内容と履歴を確認する方法を身につける**
 
 `memo.txt` をもう一度編集し、既存の行を書き換えたり、新しい行を追加したりしてください。保存後、コミットする前に差分を見てみます。
 
@@ -91,7 +123,9 @@ git log --oneline
 
 ---
 
-## 4. .gitignoreの体験
+## 5. .gitignoreの使い方
+
+**目的: 特定のファイルを追跡対象から除外する方法を理解する**
 
 コミットに含めたくないファイルを作ってみます。
 
@@ -118,7 +152,9 @@ git commit -m ".gitignoreを追加"
 
 ---
 
-## 5. ブランチ
+## 6. ブランチ
+
+**目的: ブランチを作成して切り替える基本操作を覚える**
 
 新しいブランチを作って移動します。
 
@@ -145,19 +181,21 @@ git commit -m "practice-branchでmemo.txtに追記"
 
 ---
 
-## 6. マージ（コンフリクトなし）
+## 7. マージ（コンフリクトなし）
 
-`main` ブランチに戻ります。
+**目的: ブランチの変更を取り込む基本的な流れを体験する**
+
+自分の作業ブランチ（`mywork`）に戻ります。
 
 ```bash
-git switch main
+git switch mywork
 ```
 
 `memo.txt` の**別の行**（practice-branchで編集していない箇所）を編集してコミットします。
 
 ```bash
 git add memo.txt
-git commit -m "mainでmemo.txtの別の行を編集"
+git commit -m "myworkでmemo.txtの別の行を編集"
 ```
 
 `practice-branch` の変更を取り込みます。
@@ -170,7 +208,9 @@ git merge practice-branch
 
 ---
 
-## 7. コンフリクト体験
+## 8. コンフリクト体験
+
+**目的: マージコンフリクトの発生原因と手動での解消方法を体験する**
 
 今度はわざとコンフリクトを起こします。
 
@@ -185,13 +225,13 @@ git add memo.txt
 git commit -m "conflict-branchで先頭行を変更"
 ```
 
-`main` に戻り、**同じ先頭行**を別の内容に書き換えてコミットします。
+自分の作業ブランチ（`mywork`）に戻り、**同じ先頭行**を別の内容に書き換えてコミットします。
 
 ```bash
-git switch main
+git switch mywork
 # memo.txtの先頭行を、conflict-branchとは違う内容に編集
 git add memo.txt
-git commit -m "mainで先頭行を変更"
+git commit -m "myworkで先頭行を変更"
 ```
 
 マージしてみます。
@@ -204,7 +244,7 @@ git merge conflict-branch
 
 ```
 <<<<<<< HEAD
-mainでの内容
+myworkでの内容
 =======
 conflict-branchでの内容
 >>>>>>> conflict-branch
@@ -219,7 +259,9 @@ git commit -m "コンフリクトを解消"
 
 ---
 
-## 8. stash
+## 9. stash
+
+**目的: 作業途中の変更を一時退避・復元する方法を覚える**
 
 作業途中の変更を一時的に退避する練習です。
 
@@ -243,7 +285,9 @@ git status
 
 ---
 
-## 9. 取り消し系（restore / reset / revert）
+## 10. 取り消し系（restore / reset / revert）
+
+**目的: restore / reset / revert の違いと使い分けを理解する**
 
 それぞれ「取り消せる範囲」が違います。1つずつ試してください。
 
@@ -280,82 +324,89 @@ git log --oneline
 
 ---
 
-## 10. fetch / pull / push
+## 11. fetch / pull / push
 
-実際の `origin`（クローン元のリポジトリ）には書き込み権限がないことも多いため、自分のクローンの中に「もう一人の自分」役の2つ目の作業コピーを用意して、push/fetch/pullの一連の流れを体験します。
+**目的: リモートとの間で変更をやり取りする一連の流れを体験する**
 
-**練習用リモートの準備**
-
-`git-practice` フォルダの外側で作業します。
-
-```bash
-cd ..
-git clone --bare git-practice practice-remote.git
-```
-
-これが「共有リモート」役になります。`git-practice` に、このリモートを2つ目のリモートとして登録します。
-
-```bash
-cd git-practice
-git remote add practice-remote ../practice-remote.git
-git remote -v
-```
-
-`origin` と `practice-remote` の2つが登録されていることを確認してください。
-
-もう1つ、「同僚」役の作業コピーを作ります。
-
-```bash
-cd ..
-git clone practice-remote.git colleague-copy
-cd colleague-copy
-git remote -v
-```
-
-こちらは `practice-remote.git` からのクローンなので、`origin` が `practice-remote.git` を指していることを確認してください。
+**2** で自分専用のブランチを作ってあるので、`origin` にそのままpushして構いません。共有の `main` には触れず、自分のブランチだけをリモートに送ります（実際の開発でも同じ進め方です）。
 
 **push**
 
-`git-practice` 側（自分）で `memo.txt` を編集し、コミットします。
+`memo.txt` を編集してコミットし、自分のブランチをリモートに送ります（`mywork` ブランチのままでOKです）。
 
 ```bash
-cd ../git-practice
 # memo.txtを編集
 git add memo.txt
 git commit -m "push練習用の変更"
-git push practice-remote main
+git push -u origin mywork
+```
+
+初回だけ `-u`（`--set-upstream`）を付けておくと、以降は `git push` / `git pull` だけで同じ相手とやり取りできるようになります。
+
+**確認すること**
+
+```bash
+git branch -vv
+```
+
+`mywork` が `[origin/mywork]` を追跡している状態になっていることを確認します。
+
+**「別の作業者」役の作業コピーを用意する**
+
+`fetch` / `pull` は「他の人がリモートを更新した」状況がないと体験できません。そこで、もう1つ作業コピーを作り、自分で別の作業者役を演じます。`git-practice` フォルダの外側で作業します。
+
+```bash
+cd ..
+git clone <リポジトリの場所> colleague-copy
+cd colleague-copy
+git switch mywork
+```
+
+> `<リポジトリの場所>` は **1. クローン** のときと同じものです。`git switch mywork` で、さきほどpushしたブランチに切り替わることを確認してください。
+
+同僚役として `memo.txt` を編集し、コミットしてpushします。
+
+```bash
+# memo.txtを編集
+git add memo.txt
+git commit -m "別作業者役からの変更"
+git push origin mywork
 ```
 
 **fetch**
 
-`colleague-copy` 側（同僚）に切り替えます。
+元の `git-practice` 側（自分）に戻ります。
 
 ```bash
-cd ../colleague-copy
+cd ../git-practice
 git fetch origin
 ```
 
-まだ自分の `main` ブランチには変更が反映されていないことを確認します。
+まだ自分の `mywork` ブランチには変更が反映されていないことを確認します。
 
 ```bash
-git log --oneline main
-git log --oneline origin/main
+git log --oneline mywork
+git log --oneline origin/mywork
 ```
 
-`origin/main` の方だけ、新しいコミットが増えていることを確認してください（`fetch` は取ってくるだけで、自分のブランチには取り込まない、という点がポイントです）。
+`origin/mywork` の方だけ、新しいコミットが増えていることを確認してください（`fetch` は取ってくるだけで、自分のブランチには取り込まない、という点がポイントです）。
 
 **pull**
 
 ```bash
-git pull origin main
-git log --oneline main
+git pull origin mywork
+git log --oneline mywork
 ```
 
-`pull` を実行すると `fetch` + 取り込み（マージ）がまとめて行われ、自分の `main` にも変更が反映されることを確認してください。
+`pull` を実行すると `fetch` + 取り込み（マージ）がまとめて行われ、自分の `mywork` にも変更が反映されることを確認してください。
+
+> 練習が終わったら、`colleague-copy` フォルダは削除して構いません。
 
 ---
 
-## 11. ログの見方
+## 12. ログの見方
+
+**目的: ブランチ・マージの履歴をグラフで俯瞰する方法を知る**
 
 最後に、ここまでの一連の履歴を俯瞰してみます。
 
