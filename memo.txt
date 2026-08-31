@@ -1,4 +1,4 @@
-bbbbbbbbbbbbbbbbbbbbbbbbbbbこれはGitの基本操作を練習するためのメモファイルです。
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbこれはGitの基本操作を練習するためのメモファイルです。
 
 kokokokokokooko自由に書き足したり書き換えたりしてください。
 このファイルの変更を通じて、add / commit / diff / branch / merge などを体験します
